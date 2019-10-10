@@ -1,1 +1,1 @@
-# docker-multiarck-skel
+# docker-multiarch-skel
