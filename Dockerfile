@@ -1,21 +1,21 @@
-# see hooks/build and hooks/.config
 ARG BASE_IMAGE_PREFIX
-FROM ${BASE_IMAGE_PREFIX}alpine
 
-# see hooks/post_checkout
-ARG ARCH
-COPY .gitignore qemu-${ARCH}-static* /usr/bin/
+FROM multiarch/qemu-user-static as qemu
 
-# see hooks/build and hooks/.config
-ARG BASE_IMAGE_PREFIX
-FROM ${BASE_IMAGE_PREFIX}alpine
+FROM ${BASE_IMAGE_PREFIX}alpine:edge
 
-# see hooks/post_checkout
-ARG ARCH
-COPY qemu-${ARCH}-static /usr/bin
+COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
-RUN apk update && apk upgrade
+ENV PUID=0
+ENV PGID=0
 
+COPY scripts/start.sh /
+
+RUN apk -U --no-cache upgrade
+
+RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
+RUN mkdir /config
+RUN chmod -R 777 /start.sh /config
 # ports and volumes
 EXPOSE 0
 VOLUME /config
