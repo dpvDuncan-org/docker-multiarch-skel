@@ -16,4 +16,4 @@ then
         USERNAME=<username>
 fi
 
-su -g $GROUPNAME $USERNAME -c ''
+su $USERNAME -c ''
