@@ -2,7 +2,7 @@ ARG BASE_IMAGE_PREFIX
 
 FROM multiarch/qemu-user-static as qemu
 
-FROM ${BASE_IMAGE_PREFIX}alpine:edge
+FROM ${BASE_IMAGE_PREFIX}alpine
 
 COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
@@ -13,11 +13,13 @@ COPY scripts/start.sh /
 
 RUN apk -U --no-cache upgrade
 
-RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
 RUN mkdir /config
 RUN chmod -R 777 /start.sh /config
+
+RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
+
 # ports and volumes
 EXPOSE 0
 VOLUME /config
 
-CMD [""]
+CMD ["/start.sh"]
